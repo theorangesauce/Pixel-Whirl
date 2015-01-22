@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas Pixel Test</title>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="pixWhirl.js"></script>
+		<link rel="stylesheet" type="text/css" src="pixWhirl.css">
+	</head>
+	<body>
+		<div id="mainContainer" width="256">
+			<canvas id="pixelContainer" width="256" height="256">
+				<!--fallback content here-->
+			</canvas>
+			<div>
+				<table width="256">
+				<tr><td>
+					<div id="debug" style="float:left">
+					<table>
+						<tr>
+							<td> Curr X: <span id="nX"></span></td>
+							<td> Prev X: <span id="pX"></span></td>
+							<td> Client X: <span id="cX"></span></td>
+						</tr><tr>
+							<td> Curr Y: <span id="nY"></span></td>
+							<td> Prev Y: <span id="pY"></span></td>
+							<td> Client Y: <span id="cY"></span></td>
+						</tr>
+					</table>
+					</div>
+					</td><td>
+					<div id="start" style="text-align:right;">
+						<button type="button" id="nextIteration" onclick="nextIteration()">Next Iteration</button>
+						<button type="button" id="reset" onclick = "reset(0.5)">Restart Simulation</button>
+					</div>
+					</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<img id="testImg" src="494.jpg" style="display:none;"/>
+	</body>
+</html>
