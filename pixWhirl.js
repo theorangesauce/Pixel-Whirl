@@ -106,14 +106,14 @@ var nextIteration = function(){
 var pixChecker = function(x,y){
 	//console.log("X: "+x+", Y: "+y);
 	//sum = total number of living squares around selected pixel.
-	var sum = 0
+	var sum = 0;
 	//if not on left or top border
 	if(x!==0 && y!==0){
 		//check surrounding pixels
 		for(i=x-4;i<=x+4;i+=4){
 			for(j=y-4;j<=y+4;j+=4){
-				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the field
-				if((i!==x && j!==y)&& !(i>=xDim || j>=yDim)){
+				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the fieldcountOut++;
+				if(!(i>=xDim || j>=yDim)){
 					//add prev. value to total
 					sum+=lastIter[i][j];
 				}
@@ -125,7 +125,7 @@ var pixChecker = function(x,y){
 		//check surrounding pixels
 		for(i=x-4;i<=x+4;i+=4){
 			for(j=y;j<=y+4;j+=4){
-				if((i!==x && j!==y)&&!(i>=xDim ||j>=yDim)){
+				if(!(i>=xDim || j>=yDim)){
 					sum+=lastIter[i][j];
 				}
 			}
@@ -136,7 +136,7 @@ var pixChecker = function(x,y){
 		for(i=x;i<=x+4;i+=4){
 			for(j=y-4;j<=y+4;j+=4){
 				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the field
-				if((i!==x && j!==y)&& !(i>=xDim ||j>=yDim)){
+				if(!(i>=xDim || j>=yDim)){
 					//add pixel value to total
 					sum+=lastIter[i][j];
 				}
@@ -157,10 +157,10 @@ var pixChecker = function(x,y){
 			}
 		}
 	}
-	//if there are three living cells around it, the pixel lives
-	if(x===140&&y===224){
-		console.log(sum);
+	if(pixArr[x][y]===1){
+		sum--;
 	}
+	//if there are three living cells around it, the pixel lives
 	if(sum===3){
 		//change state to living
 		pixArr[x][y] = 1;
@@ -176,6 +176,7 @@ var pixChecker = function(x,y){
 	}
 }
 
+//draw changes
 var changeColor = function(){
 	for(i=0;i<xDim;i+=4){
 		//console.log("1 X-value...")
