@@ -11,8 +11,10 @@ var canvas, ctx, img, flag = false,
     currY = 0,
 	xDim = 256,
 	yDim = 256,
+	pixelSize = 2,
     pixArr = [],
-	lastIter = [];
+	lastIter = [],
+	iter;
 	
 var init = function(){
 	
@@ -39,18 +41,18 @@ var init = function(){
     canvas.addEventListener("mouseout", function (e) {
         findxy('out', e)
     }, false);
-	for(i=0;i<xDim;i+=4){
+	for(i=0;i<xDim;i+=pixelSize){
 		pixArr[i]=[];
 		lastIter[i]=[];
-		for(j=0;j<yDim;j+=4){
+		for(j=0;j<yDim;j+=pixelSize){
 			pixArr[i][j] = 0;
 			lastIter[i][j]= 0;
 		}
 	}
-	for(i=0;i<xDim;i+=4){
-		for(j=0;j<yDim;j+=4){
+	for(i=0;i<xDim;i+=pixelSize){
+		for(j=0;j<yDim;j+=pixelSize){
 			if(Math.floor(Math.random()+0.1)===1){
-				ctx.fillRect(i,j,4,4);
+				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=1;
 				lastIter[i][j]=1;
 			}
@@ -61,14 +63,15 @@ var init = function(){
 
 //reset playing field to a random state
 var reset = function(prob){
+	clearInterval(iter);
 	//iterate over pixels
-	for(i=0;i<xDim;i+=4){
-		for(j=0;j<yDim;j+=4){
+	for(i=0;i<xDim;i+=pixelSize){
+		for(j=0;j<yDim;j+=pixelSize){
 			//random probability succeeds
 			if(Math.floor(Math.random()+prob)===1){
 				//cell starts as alive
 				ctx.fillStyle="#FFFFFF";
-				ctx.fillRect(i,j,4,4);
+				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=1;
 				lastIter[i][j]=1;
 			}
@@ -76,7 +79,7 @@ var reset = function(prob){
 			else{
 				//cell starts as dead
 				ctx.fillStyle="#000000";
-				ctx.fillRect(i,j,4,4);
+				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=0;
 				lastIter[i][j]=0
 			}
@@ -88,30 +91,30 @@ var reset = function(prob){
 //Calculates each pixel's state after one iteration
 var nextIteration = function(){
 	var total = 0
-	for(x=0;x<xDim;x+=4){
-		for(y=0;y<yDim;y+=4){
-			//console.log(""+x+", "+y);
-			if(x<256 && y<256){
+	for(x=0;x<xDim;x+=pixelSize){
+		for(y=0;y<yDim;y+=pixelSize){
+			if(x<xDim && y<yDim){
 				total+=1;
 				pixChecker(x,y);
 			}
 		}
 	}
-	console.log(lastIter===pixArr);
-	//console.log(total);
 	changeColor();
+}
+
+var loop = function(ms){
+	iter = setInterval(nextIteration, ms);
 }
 
 //Checks to see whether pixel is alive or dead
 var pixChecker = function(x,y){
-	//console.log("X: "+x+", Y: "+y);
 	//sum = total number of living squares around selected pixel.
 	var sum = 0;
 	//if not on left or top border
 	if(x!==0 && y!==0){
 		//check surrounding pixels
-		for(i=x-4;i<=x+4;i+=4){
-			for(j=y-4;j<=y+4;j+=4){
+		for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
+			for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
 				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the fieldcountOut++;
 				if(!(i>=xDim || j>=yDim)){
 					//add prev. value to total
@@ -123,8 +126,8 @@ var pixChecker = function(x,y){
 	//if on top border
 	else if(x!==0 && y===0){
 		//check surrounding pixels
-		for(i=x-4;i<=x+4;i+=4){
-			for(j=y;j<=y+4;j+=4){
+		for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
+			for(j=y;j<=y+pixelSize;j+=pixelSize){
 				if(!(i>=xDim || j>=yDim)){
 					sum+=lastIter[i][j];
 				}
@@ -133,8 +136,8 @@ var pixChecker = function(x,y){
 	}
 	else if(x===0 && y!==0){
 		//check surrounding pixels
-		for(i=x;i<=x+4;i+=4){
-			for(j=y-4;j<=y+4;j+=4){
+		for(i=x;i<=x+pixelSize;i+=pixelSize){
+			for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
 				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the field
 				if(!(i>=xDim || j>=yDim)){
 					//add pixel value to total
@@ -146,13 +149,12 @@ var pixChecker = function(x,y){
 	//if on both top and left border (0,0)
 	else{
 		//check surrounding pixels
-		for(i=x;i<=x+4;i+=4){
-			for(j=y;j<=y+4;j+=4){
+		for(i=x;i<=x+pixelSize;i+=pixelSize){
+			for(j=y;j<=y+pixelSize;j+=pixelSize){
 				//if (i,j) is not the center pixel
 				if(i!==x && j!==y){
 					//add pixel value to total
 					sum+=lastIter[i][j];
-					//console.log(sum);
 				}
 			}
 		}
@@ -164,32 +166,25 @@ var pixChecker = function(x,y){
 	if(sum===3){
 		//change state to living
 		pixArr[x][y] = 1;
-		//console.log("living to living or dead to living")
-		//console.log(pixArr[x][y]+", "+lastIter[x][y]);
 	}
 	//if there are 1 or fewer living cells or more than three living cells around it, the pixel dies
 	else if(sum<=1 || sum>3){
 		//change state to dead
 		pixArr[x][y] = 0;
-		//console.log("living to dead")
-		//console.log(pixArr[x][y]+", "+lastIter[x][y]);
 	}
 }
 
 //draw changes
 var changeColor = function(){
-	for(i=0;i<xDim;i+=4){
-		//console.log("1 X-value...")
-		for(j=0;j<yDim;j+=4){
-			//console.log(j)
-			console.log(lastIter[i][j] !== pixArr[i][j]);
+	for(i=0;i<xDim;i+=pixelSize){
+		for(j=0;j<yDim;j+=pixelSize){
 			//if(lastIter[i][j]!==pixArr[i][j]){
 				if(pixArr[i][j]===1){
 					ctx.fillStyle = "#FFFFFF";
-					ctx.fillRect(i,j,4,4);
+					ctx.fillRect(i,j,pixelSize,pixelSize);
 				}else{
 					ctx.fillStyle = "#000000";
-					ctx.fillRect(i,j,4,4);
+					ctx.fillRect(i,j,pixelSize,pixelSize);
 				}
 				lastIter[i][j]=pixArr[i][j]
 			//}
@@ -208,31 +203,26 @@ function findxy(res, e) {
             prevX = currX;
             prevY = currY;
 		
-		
-		ctx.fillRect(currX-currX%4,currY-currY%4,4,4);
-		pixArr[currX-currX%4][currY-currY%4] = 1;
+		console.log(lastIter[currY-currY%pixelSize][currX-currX%pixelSize]);
+		ctx.fillRect(currX-currX%pixelSize,currY-currY%pixelSize,pixelSize,pixelSize);
+		pixArr[currX-currX%pixelSize][currY-currY%pixelSize] = 1;
+		lastIter[currY-currY%pixelSize][currX-currX%pixelSize] = 1;
+		console.log(lastIter[currY-currY%pixelSize][currX-currX%pixelSize]);
         flag = true;
-		/*
-        dot_flag = false;
-        if (dot_flag) {
-            ctx.beginPath();
-            ctx.fillStyle = x;
-            ctx.fillRect(currX, currY, 2, 2);
-            ctx.closePath();
-            dot_flag = false;
-        }*/
     }
     if (res == 'up' || res == "out") {
         flag = false;
     }
     if (res == 'move') {
+		console.log(flag);
         if (flag) {
             currX = e.clientX - canvas.offsetLeft + document.body.scrollLeft;
             currY = e.clientY - canvas.offsetTop + document.body.scrollTop;
             prevX = currX;
             prevY = currY;
-			ctx.fillRect(currX-currX%4,currY-currY%4,4,4);
-			pixArr[currY-currY%4][currX-currX%4] = 1;
+			ctx.fillRect(currX-currX%pixelSize,currY-currY%pixelSize,pixelSize,pixelSize);
+			pixArr[currY-currY%pixelSize][currX-currX%pixelSize] = 1;
+			lastIter[currY-currY%pixelSize][currX-currX%pixelSize] = 1;
         }
     }
 }

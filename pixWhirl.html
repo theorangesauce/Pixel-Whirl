@@ -8,13 +8,14 @@
 	</head>
 	<body>
 		<div id="mainContainer" width="256">
+			<h1 style="font-align:center;">Conway's <i>Game of Life</i></h1>
 			<canvas id="pixelContainer" width="256" height="256">
 				<!--fallback content here-->
 			</canvas>
 			<div>
 				<table width="256">
 				<tr><td>
-					<div id="debug" style="float:left">
+					<div id="debug" style="float:left; display:none;">
 					<table>
 						<tr>
 							<td> Curr X: <span id="nX"></span></td>
@@ -30,7 +31,8 @@
 					</td><td>
 					<div id="start" style="text-align:right;">
 						<button type="button" id="nextIteration" onclick="nextIteration()">Next Iteration</button>
-						<button type="button" id="reset" onclick = "reset(0.5)">Restart Simulation</button>
+						<button type="button" id="reset" onclick = "reset(0.5)">Reset Simulation</button>
+						<button type="button" id="reset" onclick = "loop(100)">Start Simulation</button>
 					</div>
 					</td>
 					</tr>
