@@ -4,24 +4,32 @@ var readyStateCheckInterval = setInterval(function() {
         init();
     }
 }, 10);
+
 var canvas, ctx, img, flag = false,
     prevX = 0,
     currX = 0,
     prevY = 0,
     currY = 0,
-	xDim = 256,
-	yDim = 256,
-	pixelSize = 2,
+	xDim = 1024,
+	yDim = 512,
+	pixelSize = 4,
     pixArr = [],
 	lastIter = [],
-	iter;
+	iter,
+	isLooping = false;
 	
 var init = function(){
-	
 	canvas = document.getElementById("pixelContainer");
 	ctx = canvas.getContext("2d");
 	console.log(document.getElementById("pixelContainer"));
 	img = document.getElementById("testImg");
+	
+	//
+	canvas.width = xDim;
+	canvas.height = yDim;
+	document.getElementById("mainContainer").width = xDim;
+	document.getElementById("title").width = xDim;
+	document.getElementById("dataContainer").width = xDim;
 	
 	//ctx.drawImage(img, 0, 0,500,500);
 	ctx.fillStyle = "#000000";
@@ -64,6 +72,8 @@ var init = function(){
 //reset playing field to a random state
 var reset = function(prob){
 	clearInterval(iter);
+	isLooping = false;
+	document.getElementById("start").innerHTML = "Start Simulation";
 	//iterate over pixels
 	for(i=0;i<xDim;i+=pixelSize){
 		for(j=0;j<yDim;j+=pixelSize){
@@ -102,8 +112,21 @@ var nextIteration = function(){
 	changeColor();
 }
 
-var loop = function(ms){
-	iter = setInterval(nextIteration, ms);
+var loop = function(msDefault){
+	var msInput = document.getElementById("ms").value;
+	if(isLooping){
+		clearInterval(iter);
+		isLooping = false;
+		document.getElementById("start").innerHTML = "Start Simulation";
+	}else{
+		isLooping = true;
+		if(msInput==="" || msInput <=0){
+			iter = setInterval(nextIteration, msDefault);
+		}else{
+			iter = setInterval(nextIteration, msInput)
+		}
+		document.getElementById("start").innerHTML = "Pause Simulation";
+	}
 }
 
 //Checks to see whether pixel is alive or dead

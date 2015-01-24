@@ -7,14 +7,16 @@
 		<link rel="stylesheet" type="text/css" src="pixWhirl.css">
 	</head>
 	<body>
-		<div id="mainContainer" width="256">
-			<h1 style="font-align:center;">Conway's <i>Game of Life</i></h1>
-			<canvas id="pixelContainer" width="256" height="256">
+		<div id="mainContainer" width="256" align="center">
+			<h1 id="title" width="256" style="text-align:center;">Conway's <i>Game of Life</i></h1>
+			<!--Main game window-->
+			<canvas id="pixelContainer" width="256" height="256" >
 				<!--fallback content here-->
 			</canvas>
 			<div>
-				<table width="256">
+				<table  id="dataContainer" width="256">
 				<tr><td>
+				<!--Debug block to monitor canvas draw function-->
 					<div id="debug" style="float:left; display:none;">
 					<table>
 						<tr>
@@ -28,17 +30,18 @@
 						</tr>
 					</table>
 					</div>
-					</td><td>
-					<div id="start" style="text-align:right;">
+				</td><td>
+					<!--Buttons for interacting with Game of Life simulation-->
+					<div id="buttonContainer" style="text-align:right;">
 						<button type="button" id="nextIteration" onclick="nextIteration()">Next Iteration</button>
 						<button type="button" id="reset" onclick = "reset(0.5)">Reset Simulation</button>
-						<button type="button" id="reset" onclick = "loop(100)">Start Simulation</button>
+						<button type="button" id="start" onclick = "loop(100)">Start Simulation</button>
+						<input type="text" id="ms" width="32" maxlength="4" style="width:32px;" value="100">ms</input>
 					</div>
 					</td>
 					</tr>
 				</table>
 			</div>
 		</div>
-		<img id="testImg" src="494.jpg" style="display:none;"/>
 	</body>
 </html>
