@@ -59,7 +59,7 @@ var init = function(){
 	}
 	for(i=0;i<xDim;i+=pixelSize){
 		for(j=0;j<yDim;j+=pixelSize){
-			if(Math.floor(Math.random()+0.1)===1){
+			if(Math.floor(Math.random()+0.5)===1){
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=1;
 				lastIter[i][j]=1;
@@ -70,10 +70,15 @@ var init = function(){
 }
 
 //reset playing field to a random state
-var reset = function(prob){
+var reset = function(defProb){
 	clearInterval(iter);
 	isLooping = false;
 	document.getElementById("start").innerHTML = "Start Simulation";
+	var probInput = document.getElementById("prob").value;
+	var prob = defProb;
+	if(!(probInput==="" || probInput<=0 || probInput>=1)){
+		prob = parseFloat(probInput);
+	}
 	//iterate over pixels
 	for(i=0;i<xDim;i+=pixelSize){
 		for(j=0;j<yDim;j+=pixelSize){

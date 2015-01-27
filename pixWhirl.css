@@ -1,3 +1,20 @@
 body{
-	background-color:black;
+	background-color:#000000;
+}
+input{
+	width:32px;
+}
+.label{
+	font-size:14px;
+}
+.text{	
+	color:#FFFFFF;
+	font-family:Georgia;
+}
+#title{
+	text-align:center;
+}
+#pixelContainer{
+	border:10px ridge #888888;
+	border-radius:5px;
 }
