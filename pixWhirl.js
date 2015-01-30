@@ -208,11 +208,15 @@ var changeColor = function(){
 		for(j=0;j<yDim;j+=pixelSize){
 			//if(lastIter[i][j]!==pixArr[i][j]){
 				if(pixArr[i][j]===1){
+					if(lastIter[i][j]!==1){
 					ctx.fillStyle = "#FFFFFF";
 					ctx.fillRect(i,j,pixelSize,pixelSize);
+					}
 				}else{
+					if(lastIter[i][j]!==0){
 					ctx.fillStyle = "#000000";
 					ctx.fillRect(i,j,pixelSize,pixelSize);
+					}
 				}
 				lastIter[i][j]=pixArr[i][j]
 			//}
