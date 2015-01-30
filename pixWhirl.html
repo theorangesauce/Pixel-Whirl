@@ -15,6 +15,7 @@
 			</canvas>
 			<div>
 				<table  id="dataContainer" width="256">
+				<tbody>
 				<tr><td>
 				<!--Debug block to monitor canvas draw function-->
 					<div class="text" id="debug" style="float:left; display:none;">
@@ -32,6 +33,9 @@
 					</div>
 				</td><td>
 					<!--Buttons for interacting with Game of Life simulation-->
+					<div style="float:left;">
+						<span class="text">Number of Iterations: </span><span class="text" id="iterNum">0</span>
+					</div>
 					<div id="buttonContainer" style="text-align:right;">
 						<button type="button" id="nextIteration" onclick="nextIteration()">Next Iteration</button>
 						<button type="button" id="reset" onclick = "reset(0.5)">Reset Simulation</button>
@@ -39,8 +43,8 @@
 						<button type="button" id="start" onclick = "loop(100)">Start Simulation</button>
 						<input type="text" id="ms" maxlength="4" value="100"><span class="text label">&nbsp;ms</span>
 					</div>
-					</td>
-					</tr>
+				</td></tr>
+				</tbody>
 				</table>
 			</div>
 		</div>

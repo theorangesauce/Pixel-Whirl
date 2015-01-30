@@ -4,17 +4,25 @@ var readyStateCheckInterval = setInterval(function() {
         init();
     }
 }, 10);
-
+//Canvas Variables
 var canvas, ctx, img, flag = false,
-    prevX = 0,
-    currX = 0,
-    prevY = 0,
-    currY = 0,
+
+    //Mouse variables
+	prevX = 0, currX = 0,
+    prevY = 0, currY = 0,
+	
+	//canvas size variables
 	xDim = 1024,
 	yDim = 512,
 	pixelSize = 4,
+	
+	//state container variables
     pixArr = [],
 	lastIter = [],
+	
+	//iteration variables
+	iterCountElem,
+	numIterations = 0,
 	iter,
 	isLooping = false;
 	
@@ -23,8 +31,9 @@ var init = function(){
 	ctx = canvas.getContext("2d");
 	console.log(document.getElementById("pixelContainer"));
 	img = document.getElementById("testImg");
+	iterCountElem = document.getElementById("iterNum");
 	
-	//
+	// set size of things based on variables
 	canvas.width = xDim;
 	canvas.height = yDim;
 	document.getElementById("mainContainer").width = xDim;
@@ -71,6 +80,8 @@ var init = function(){
 
 //reset playing field to a random state
 var reset = function(defProb){
+	numIterations = 0;
+	iterCountElem.innerHTML = numIterations;
 	clearInterval(iter);
 	isLooping = false;
 	document.getElementById("start").innerHTML = "Start Simulation";
@@ -105,6 +116,7 @@ var reset = function(defProb){
 
 //Calculates each pixel's state after one iteration
 var nextIteration = function(){
+	numIterations++;
 	var total = 0
 	for(x=0;x<xDim;x+=pixelSize){
 		for(y=0;y<yDim;y+=pixelSize){
@@ -115,6 +127,7 @@ var nextIteration = function(){
 		}
 	}
 	changeColor();
+	iterCountElem.innerHTML = numIterations;
 }
 
 var loop = function(msDefault){

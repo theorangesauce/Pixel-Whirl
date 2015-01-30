@@ -4,6 +4,9 @@ body{
 input{
 	width:32px;
 }
+tr td table{
+	padding:0px;
+}
 .label{
 	font-size:14px;
 }
