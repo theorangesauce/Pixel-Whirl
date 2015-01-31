@@ -26,7 +26,11 @@ var canvas, ctx, img, flag = false,
 	iterCountElem,
 	numIterations = 0,
 	iter,
-	isLooping = false;
+	isLooping = false,
+	
+	//game type variables
+	useGameOfLife = false,
+	useDayAndNight = false;
 	
 var init = function(){
 	//get elements to be used/modified later
@@ -216,9 +220,22 @@ var pixChecker = function(x,y){
 			}
 		}
 	}
+	//don't count pixel being checked
 	if(pixArr[x][y]===1){
 		sum--;
 	}
+	//choose which rule set to use
+	if(useGameOfLife){
+		gameOfLife(sum);
+	}else if(useDayAndNight){
+		dayAndNight(sum);
+	}else{ //default is Game of Life
+		gameOfLife(sum);
+	}
+}
+
+//use Game of Life rule set to determine state
+var gameOfLife = function(sum){
 	//if there are three living cells around it, the pixel lives
 	if(sum===3){
 		//change state to living
@@ -226,6 +243,19 @@ var pixChecker = function(x,y){
 	}
 	//if there are 1 or fewer living cells or more than three living cells around it, the pixel dies
 	else if(sum<=1 || sum>3){
+		//change state to dead
+		pixArr[x][y] = 0;
+	}
+}
+
+var dayAndNight = function(sum){
+	//if there are three living cells around it, the pixel lives
+	if(sum===3 || sum===6 || sum===7 || sum===8){
+		//change state to living
+		pixArr[x][y] = 1;
+	}
+	//if there are 1 or fewer living cells or more than three living cells around it, the pixel dies
+	else if(sum<=2 || sum>8 || sum===5){
 		//change state to dead
 		pixArr[x][y] = 0;
 	}
