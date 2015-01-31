@@ -30,7 +30,9 @@ var canvas, ctx, img, flag = false,
 	
 	//game type variables
 	useGameOfLife = false,
-	useDayAndNight = false;
+	useDayAndNight = true,
+	useLifeWithoutDeath = false,
+	useHighlife = false;
 	
 var init = function(){
 	//get elements to be used/modified later
@@ -229,6 +231,10 @@ var pixChecker = function(x,y){
 		gameOfLife(sum);
 	}else if(useDayAndNight){
 		dayAndNight(sum);
+	}else if(useLifeWithoutDeath){
+		lifeWithoutDeath(sum);
+	}else if(useHighlife){
+		highlife(sum);
 	}else{ //default is Game of Life
 		gameOfLife(sum);
 	}
@@ -248,15 +254,37 @@ var gameOfLife = function(sum){
 	}
 }
 
+//use Day and Night rule set to determine state
 var dayAndNight = function(sum){
-	//if there are three living cells around it, the pixel lives
+	//if there are three, six, seven, or eight living cells around it, the pixel lives
 	if(sum===3 || sum===6 || sum===7 || sum===8){
 		//change state to living
 		pixArr[x][y] = 1;
 	}
-	//if there are 1 or fewer living cells or more than three living cells around it, the pixel dies
-	else if(sum<=2 || sum>8 || sum===5){
+	//if there are 2 or fewer living cells or exactly five living cells around it, the pixel dies
+	else if(sum<=2 || sum===5){
 		//change state to dead
+		pixArr[x][y] = 0;
+	}
+}
+
+//Use Life without Death rule set to determine state
+var lifeWithoutDeath = function(sum){
+	// if there are three living cells around it, the pixel lives
+	if(sum===3){
+		pixArr[x][y] = 1;
+	}
+	//pixels never die
+}
+
+//use Highlife rule set to determine state
+var highlife = function(sum){
+	//if there are three living cells around it, the pixel lives; if there are six living cells around it AND is not alive, the pixel lives
+	if(sum===3 || (sum===6 && pixArr[x][y]===0)){
+		pixArr[x][y] = 1;
+	}
+	//if there are 1 or fewer living cells or more than three living cells around it, the cell dies
+	else if(sum<=1 || sum>3){
 		pixArr[x][y] = 0;
 	}
 }
