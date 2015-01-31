@@ -1,9 +1,11 @@
+//Ensures that all required elements are generated before working with them.
 var readyStateCheckInterval = setInterval(function() {
     if (document.readyState === "complete") {
         clearInterval(readyStateCheckInterval);
         init();
     }
 }, 10);
+
 //Canvas Variables
 var canvas, ctx, img, flag = false,
 
@@ -27,6 +29,7 @@ var canvas, ctx, img, flag = false,
 	isLooping = false;
 	
 var init = function(){
+	//get elements to be used/modified later
 	canvas = document.getElementById("pixelContainer");
 	ctx = canvas.getContext("2d");
 	console.log(document.getElementById("pixelContainer"));
@@ -40,11 +43,12 @@ var init = function(){
 	document.getElementById("title").width = xDim;
 	document.getElementById("dataContainer").width = xDim;
 	
-	//ctx.drawImage(img, 0, 0,500,500);
+	//canvas starts with a back background
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,xDim,yDim);
 	ctx.fillStyle = "#FFFFFF";
 	
+	//do things based on mouse movement (currently not fully functional)
 	canvas.addEventListener("mousemove", function (e) {
         findxy('move', e)
     }, false);
@@ -58,6 +62,8 @@ var init = function(){
     canvas.addEventListener("mouseout", function (e) {
         findxy('out', e)
     }, false);
+	
+	//initialize state storage arrays
 	for(i=0;i<xDim;i+=pixelSize){
 		pixArr[i]=[];
 		lastIter[i]=[];
@@ -66,6 +72,7 @@ var init = function(){
 			lastIter[i][j]= 0;
 		}
 	}
+	//generate initial state of simulation using p(alive) = 0.5
 	for(i=0;i<xDim;i+=pixelSize){
 		for(j=0;j<yDim;j+=pixelSize){
 			if(Math.floor(Math.random()+0.5)===1){
@@ -75,16 +82,18 @@ var init = function(){
 			}
 		}
 	}
-	console.log(pixArr===lastIter);
 }
 
 //reset playing field to a random state
 var reset = function(defProb){
+	//reset iteration counter
 	numIterations = 0;
 	iterCountElem.innerHTML = numIterations;
+	//make sure current simulation has ended before resetting
 	clearInterval(iter);
 	isLooping = false;
 	document.getElementById("start").innerHTML = "Start Simulation";
+	//if user-inputted probability exists and is valid, use it; otherwise, use default value
 	var probInput = document.getElementById("prob").value;
 	var prob = defProb;
 	if(!(probInput==="" || probInput<=0 || probInput>=1)){
@@ -116,28 +125,35 @@ var reset = function(defProb){
 
 //Calculates each pixel's state after one iteration
 var nextIteration = function(){
+	//count how long the simulation has been running
 	numIterations++;
-	var total = 0
+	//check next state for each pixel
 	for(x=0;x<xDim;x+=pixelSize){
 		for(y=0;y<yDim;y+=pixelSize){
 			if(x<xDim && y<yDim){
-				total+=1;
+				//total+=1;
 				pixChecker(x,y);
 			}
 		}
 	}
+	//change simulation to next state
 	changeColor();
 	iterCountElem.innerHTML = numIterations;
 }
 
+//Controls the "Start Simulation" button, which loops the simulation based on the number in ms to the right of the button.
 var loop = function(msDefault){
+	//get speed of loop
 	var msInput = document.getElementById("ms").value;
+	//if the loop is running, stop it
 	if(isLooping){
 		clearInterval(iter);
 		isLooping = false;
 		document.getElementById("start").innerHTML = "Start Simulation";
+	//if loop isn't running, start it
 	}else{
 		isLooping = true;
+		//if user wrote a value, use user input; if space is blank, use default value
 		if(msInput==="" || msInput <=0){
 			iter = setInterval(nextIteration, msDefault);
 		}else{
@@ -215,29 +231,34 @@ var pixChecker = function(x,y){
 	}
 }
 
-//draw changes
+//Draws changes from previous iteration
 var changeColor = function(){
-	for(i=0;i<xDim;i+=pixelSize){
+	//loop through rows
+	for(i=0;i<xDim;i+=pixelSize){ 
+		//for each pixel in row
 		for(j=0;j<yDim;j+=pixelSize){
-			//if(lastIter[i][j]!==pixArr[i][j]){
-				if(pixArr[i][j]===1){
-					if(lastIter[i][j]!==1){
-					ctx.fillStyle = "#FFFFFF";
-					ctx.fillRect(i,j,pixelSize,pixelSize);
-					}
-				}else{
-					if(lastIter[i][j]!==0){
-					ctx.fillStyle = "#000000";
-					ctx.fillRect(i,j,pixelSize,pixelSize);
-					}
+			//if pixel's next state is alive AND state is different from previous state, draw pixel as alive
+			if(pixArr[i][j]===1){
+				if(lastIter[i][j]!==1){
+				ctx.fillStyle = "#FFFFFF";
+				ctx.fillRect(i,j,pixelSize,pixelSize);
 				}
-				lastIter[i][j]=pixArr[i][j]
-			//}
+			//if pixel's next state is dead AND state has changed from previous state, draw pixel as dead
+			}else{
+				if(lastIter[i][j]!==0){
+				ctx.fillStyle = "#000000";
+				ctx.fillRect(i,j,pixelSize,pixelSize);
+				}
+			}
+			//prepare lastIter for next iteration
+			lastIter[i][j]=pixArr[i][j]
 		}
 	}
+	//ensure that mouse draws in white
 	ctx.fillStyle = "#FFFFFF";
 }
 
+//Detects mouse position in the canvas and does things with that position (not fully functional yet)
 function findxy(res, e) {
     debug_update(prevX, prevY, currX, currY, e.clientX, e.clientY);
     if (res == 'down') {
