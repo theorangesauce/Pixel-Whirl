@@ -6,6 +6,9 @@ var readyStateCheckInterval = setInterval(function() {
     }
 }, 10);
 
+var aliveColors = ["#FFFFFF", "#E6B800", "#8AE62E","#FF9933"],
+	deadColors = ["#000000","#323232","#5C8AE6", "#A319D1"];
+
 //Canvas Variables
 var canvas, ctx, img, flag = false,
 
@@ -13,10 +16,11 @@ var canvas, ctx, img, flag = false,
 	prevX = 0, currX = 0,
     prevY = 0, currY = 0,
 	
-	//canvas size variables
-	xDim = 1024,
-	yDim = 512,
+	//canvas style variables
+	xDim = 256,
+	yDim = 256,
 	pixelSize = 4,
+	color = 1,
 	
 	//state container variables
     pixArr = [],
@@ -50,9 +54,9 @@ var init = function(){
 	document.getElementById("dataContainer").width = xDim;
 	
 	//canvas starts with a back background
-	ctx.fillStyle = "#000000";
+	ctx.fillStyle = deadColors[color];
 	ctx.fillRect(0,0,xDim,yDim);
-	ctx.fillStyle = "#FFFFFF";
+	ctx.fillStyle = aliveColors[color];
 	
 	//do things based on mouse movement (currently not fully functional)
 	canvas.addEventListener("mousemove", function (e) {
@@ -111,7 +115,7 @@ var reset = function(defProb){
 			//random probability succeeds
 			if(Math.floor(Math.random()+prob)===1){
 				//cell starts as alive
-				ctx.fillStyle="#FFFFFF";
+				ctx.fillStyle=aliveColors[color];
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=1;
 				lastIter[i][j]=1;
@@ -119,14 +123,14 @@ var reset = function(defProb){
 			//random probability fails
 			else{
 				//cell starts as dead
-				ctx.fillStyle="#000000";
+				ctx.fillStyle=deadColors[color];
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=0;
 				lastIter[i][j]=0
 			}
 		}
 	}
-	ctx.fillStyle="#FFFFFF";
+	ctx.fillStyle=aliveColors[color];
 }
 
 //Calculates each pixel's state after one iteration
@@ -298,13 +302,13 @@ var changeColor = function(){
 			//if pixel's next state is alive AND state is different from previous state, draw pixel as alive
 			if(pixArr[i][j]===1){
 				if(lastIter[i][j]!==1){
-				ctx.fillStyle = "#FFFFFF";
+				ctx.fillStyle = aliveColors[color];
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				}
 			//if pixel's next state is dead AND state has changed from previous state, draw pixel as dead
 			}else{
 				if(lastIter[i][j]!==0){
-				ctx.fillStyle = "#000000";
+				ctx.fillStyle = deadColors[color];
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				}
 			}
@@ -313,7 +317,7 @@ var changeColor = function(){
 		}
 	}
 	//ensure that mouse draws in white
-	ctx.fillStyle = "#FFFFFF";
+	ctx.fillStyle = aliveColors[color];
 }
 
 //Detects mouse position in the canvas and does things with that position (not fully functional yet)
