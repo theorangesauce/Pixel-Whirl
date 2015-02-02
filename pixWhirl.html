@@ -7,12 +7,38 @@
 		<link rel="stylesheet" type="text/css" href="pixWhirl.css">
 	</head>
 	<body>
-		<div id="mainContainer" width="256" align="center">
+		<div id="mainContainer" align="center">
 			<h1 class="text" id="title" width="256">Conway's <i>Game of Life</i></h1>
-			<!--Main game window-->
-			<canvas id="pixelContainer" width="256" height="256" >
-				<!--fallback content here-->
-			</canvas>
+			<table id="columns" >
+			<tbody>
+			<tr><td>
+			<div id="firstColumn" class="text">
+				Game Type:
+				<div style="text-align:left;">
+					<form id="gameTypeForm">
+					<input type="radio" class="gameTypeRadioButton" name="game" value="gameOfLife" checked onclick="gameSelect('gameOfLife')"><span class="gameTypeInput">Game of Life</span><br>
+					<input type="radio" class="gameTypeRadioButton" name="game" value="dayAndNight" onclick="gameSelect('dayAndNight')"><span class="gameTypeInput">Day and Night</span><br>
+					<input type="radio" class="gameTypeRadioButton" name="game" value="lifeWithoutDeath" onclick="gameSelect('lifeWithoutDeath')"><span class="gameTypeInput">Life Without &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Death</span><br>
+					<input type="radio" class="gameTypeRadioButton" name="game" value="highlife" onclick="gameSelect('highlife')"><span class="gameTypeInput">Highlife</span>
+					</form>
+				</div>
+			</div>
+			</td><td align="center">
+				<!--Main game window-->
+				<canvas id="pixelContainer" width="256" height="256">
+					<!--fallback content here-->
+				</canvas>
+			</td><td>
+				<div id="buttonContainer thirdColumn">
+					<button type="button" id="nextIteration" onclick="nextIteration()" style="margin-bottom:5px;">Next Iteration</button><br>
+					<button type="button" id="reset" onclick = "reset(0.5)">Reset Simulation</button><br>
+					<input type="text" id="prob" width="32" maxlength="4" value="0.5" style="margin-bottom:5px;"><span class="text label">&nbsp;Pixel Chance</span><br>
+					<button type="button" id="start" onclick = "loop(100)">Start Simulation</button><br>
+					<input type="text" id="ms" maxlength="4" value="100"><span class="text label">&nbsp;ms</span><br>
+				</div>
+			</td>
+			</tbody>
+			</table>
 			<div>
 				<table  id="dataContainer" width="256">
 				<tbody>
@@ -36,13 +62,13 @@
 					<div style="float:left;">
 						<span class="text">Number of Iterations: </span><span class="text" id="iterNum">0</span>
 					</div>
-					<div id="buttonContainer" style="text-align:right;">
+					<!--<div id="buttonContainer" style="text-align:right;">
 						<button type="button" id="nextIteration" onclick="nextIteration()">Next Iteration</button>
 						<button type="button" id="reset" onclick = "reset(0.5)">Reset Simulation</button>
 						<input type="text" id="prob" width="32" maxlength="4" value="0.5"><span class="text label">&nbsp;Pixel Chance</span>
 						<button type="button" id="start" onclick = "loop(100)">Start Simulation</button>
 						<input type="text" id="ms" maxlength="4" value="100"><span class="text label">&nbsp;ms</span>
-					</div>
+					</div>-->
 				</td></tr>
 				</tbody>
 				</table>

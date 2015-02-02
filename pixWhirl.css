@@ -4,8 +4,15 @@ body{
 input{
 	width:32px;
 }
-tr td table{
+table{
 	padding:0px;
+}
+button{
+	width:120px;
+	margin-bottom:1px;
+}
+td{
+	width:0px;
 }
 .label{
 	font-size:14px;
@@ -14,10 +21,24 @@ tr td table{
 	color:#FFFFFF;
 	font-family:Georgia;
 }
+.gameTypeInput{
+	font-size:12px;
+}
+.gameTypeRadioButton{
+	width:16px;
+	margin-left:0px;
+}
 #title{
 	text-align:center;
 }
 #pixelContainer{
 	border:10px ridge #888888;
 	border-radius:5px;
+}
+#firstColumn{
+	text-align:center;
+	width:120px;
+}
+#thirdColumn{
+	text-align:left;
 }

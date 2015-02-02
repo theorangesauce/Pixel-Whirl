@@ -5,11 +5,11 @@ var readyStateCheckInterval = setInterval(function() {
         init();
     }
 }, 10);
-
+// Color pairs
 var aliveColors = ["#FFFFFF", "#E6B800", "#8AE62E","#FF9933"],
 	deadColors = ["#000000","#323232","#5C8AE6", "#A319D1"];
 
-//Canvas Variables
+//Canvas variables
 var canvas, ctx, img, flag = false,
 
     //Mouse variables
@@ -17,8 +17,8 @@ var canvas, ctx, img, flag = false,
     prevY = 0, currY = 0,
 	
 	//canvas style variables
-	xDim = 256,
-	yDim = 256,
+	xDim = 512,
+	yDim = 512,
 	pixelSize = 4,
 	color = 1,
 	
@@ -38,6 +38,15 @@ var canvas, ctx, img, flag = false,
 	useLifeWithoutDeath = false,
 	useHighlife = false;
 	
+function getDocWidth() {
+    var D = document;
+    return Math.max(
+        D.body.scrollWidth, D.documentElement.scrollWidth,
+        D.body.offsetWidth, D.documentElement.offsetWidth,
+        D.body.clientWidth, D.documentElement.clientWidth
+    );
+}
+	
 var init = function(){
 	//get elements to be used/modified later
 	canvas = document.getElementById("pixelContainer");
@@ -52,8 +61,13 @@ var init = function(){
 	document.getElementById("mainContainer").width = xDim;
 	document.getElementById("title").width = xDim;
 	document.getElementById("dataContainer").width = xDim;
+	document.getElementById("firstColumn").width = (getDocWidth()-xDim)/2;
+	document.getElementById("buttonContainer thirdColumn").width = (getDocWidth()-xDim)/2;
 	
-	//canvas starts with a back background
+	//ensure that canvas is empty
+	ctx.clearRect(0,0,xDim,yDim);
+	
+	//canvas starts with a black background
 	ctx.fillStyle = deadColors[color];
 	ctx.fillRect(0,0,xDim,yDim);
 	ctx.fillStyle = aliveColors[color];
@@ -94,6 +108,32 @@ var init = function(){
 	}
 }
 
+// Changes game type based on radio buttons in HTML
+var gameSelect = function(game){
+	console.log("Function called with argument \""+game+"\"")
+	if(game==="gameOfLife"){
+		useGameOfLife = true,
+		useDayAndNight = false,
+		useLifeWithoutDeath = false,
+		useHighlife = false;
+	}else if(game==="dayAndNight"){
+		useGameOfLife = false,
+		useDayAndNight = true,
+		useLifeWithoutDeath = false,
+		useHighlife = false;
+	}else if(game==="lifeWithoutDeath"){
+		useGameOfLife = false,
+		useDayAndNight = false,
+		useLifeWithoutDeath = true,
+		useHighlife = false;
+	}else if(game==="highlife"){
+		useGameOfLife = false,
+		useDayAndNight = false,
+		useLifeWithoutDeath = false,
+		useHighlife = true;
+	}
+}
+
 //reset playing field to a random state
 var reset = function(defProb){
 	//reset iteration counter
@@ -109,6 +149,10 @@ var reset = function(defProb){
 	if(!(probInput==="" || probInput<=0 || probInput>=1)){
 		prob = parseFloat(probInput);
 	}
+	
+	//clear previous simulation
+	ctx.clearRect(0,0,xDim,yDim);
+	
 	//iterate over pixels
 	for(i=0;i<xDim;i+=pixelSize){
 		for(j=0;j<yDim;j+=pixelSize){
