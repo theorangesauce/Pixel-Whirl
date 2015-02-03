@@ -28,6 +28,12 @@ td{
 	width:16px;
 	margin-left:0px;
 }
+#columns{
+	margin:auto auto;
+}
+#mainContainer{
+	margin-left:auto;
+}
 #title{
 	text-align:center;
 }

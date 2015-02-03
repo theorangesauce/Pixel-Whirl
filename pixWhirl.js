@@ -22,19 +22,23 @@ var canvas, ctx, img, flag = false,
 	pixelSize = 4,
 	color = 1,
 	
-	//state container variables
+	//game state variables
     pixArr = [],
 	lastIter = [],
+	livePixelElem,
+	deadPixelElem,
+	totalPixels = xDim*yDim,
+	livePixelSum = 0,
 	
 	//iteration variables
-	iterCountElem,
+	//iterCountElem,
 	numIterations = 0,
 	iter,
 	isLooping = false,
 	
 	//game type variables
-	useGameOfLife = false,
-	useDayAndNight = true,
+	useGameOfLife = true,
+	useDayAndNight = false,
 	useLifeWithoutDeath = false,
 	useHighlife = false;
 	
@@ -54,6 +58,8 @@ var init = function(){
 	console.log(document.getElementById("pixelContainer"));
 	img = document.getElementById("testImg");
 	iterCountElem = document.getElementById("iterNum");
+	livePixelElem = document.getElementById("livePixelNum");
+	deadPixelElem = document.getElementById("deadPixelNum");
 	
 	// set size of things based on variables
 	canvas.width = xDim;
@@ -87,6 +93,9 @@ var init = function(){
         findxy('out', e)
     }, false);
 	
+	//initialize sum
+	livePixelSum = 0;
+	
 	//initialize state storage arrays
 	for(i=0;i<xDim;i+=pixelSize){
 		pixArr[i]=[];
@@ -103,9 +112,13 @@ var init = function(){
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=1;
 				lastIter[i][j]=1;
+				livePixelSum++;
 			}
 		}
 	}
+	//display number of living cells
+	livePixelElem.innerHTML = livePixelSum;
+	deadPixelElem.innerHTML = totalPixels - livePixelSum;
 }
 
 // Changes game type based on radio buttons in HTML
@@ -152,6 +165,7 @@ var reset = function(defProb){
 	
 	//clear previous simulation
 	ctx.clearRect(0,0,xDim,yDim);
+	livePixelSum = 0;
 	
 	//iterate over pixels
 	for(i=0;i<xDim;i+=pixelSize){
@@ -163,6 +177,7 @@ var reset = function(defProb){
 				ctx.fillRect(i,j,pixelSize,pixelSize);
 				pixArr[i][j]=1;
 				lastIter[i][j]=1;
+				livePixelSum++;
 			}
 			//random probability fails
 			else{
@@ -174,6 +189,9 @@ var reset = function(defProb){
 			}
 		}
 	}
+	//display number of living cells
+	livePixelElem.innerHTML = livePixelSum;
+	deadPixelElem.innerHTML = totalPixels - livePixelSum;
 	ctx.fillStyle=aliveColors[color];
 }
 
@@ -181,6 +199,10 @@ var reset = function(defProb){
 var nextIteration = function(){
 	//count how long the simulation has been running
 	numIterations++;
+	
+	//reset sum of pixels
+	livePixelSum = 0;
+	
 	//check next state for each pixel
 	for(x=0;x<xDim;x+=pixelSize){
 		for(y=0;y<yDim;y+=pixelSize){
@@ -193,6 +215,10 @@ var nextIteration = function(){
 	//change simulation to next state
 	changeColor();
 	iterCountElem.innerHTML = numIterations;
+	
+	//display number of living cells
+	livePixelElem.innerHTML = livePixelSum;
+	deadPixelElem.innerHTML = totalPixels - livePixelSum;
 }
 
 //Controls the "Start Simulation" button, which loops the simulation based on the number in ms to the right of the button.
@@ -345,6 +371,7 @@ var changeColor = function(){
 		for(j=0;j<yDim;j+=pixelSize){
 			//if pixel's next state is alive AND state is different from previous state, draw pixel as alive
 			if(pixArr[i][j]===1){
+				livePixelSum++;
 				if(lastIter[i][j]!==1){
 				ctx.fillStyle = aliveColors[color];
 				ctx.fillRect(i,j,pixelSize,pixelSize);
