@@ -10,9 +10,14 @@ table{
 button{
 	width:120px;
 	margin-bottom:1px;
+	font-family:Georgia serif;
+	font-size:14px;
 }
 td{
 	width:0px;
+}
+hr{
+	width:90%;
 }
 .label{
 	font-size:14px;

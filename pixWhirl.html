@@ -14,6 +14,7 @@
 			<tr><td>
 			<div id="firstColumn" class="text">
 				Game Type:
+				<hr>
 				<div style="text-align:left;">
 					<form id="gameTypeForm">
 					<input type="radio" class="gameTypeRadioButton" name="game" value="gameOfLife" checked onclick="gameSelect('gameOfLife')"><span class="gameTypeInput">Game of Life</span><br>
@@ -28,7 +29,7 @@
 				<canvas id="pixelContainer" width="256" height="256">
 					<!--fallback content here-->
 				</canvas>
-				<div style="text-align:left;">
+				<div style="text-align:justify;">
 					<span class="text">Number of Iterations: </span><span class="text" id="iterNum">0</span>
 					<span class="text">&nbsp;&nbsp;|&nbsp;&nbsp;Live Cells: </span><span class="text" id="livePixelNum">0</span>
 					<span class="text">&nbsp;&nbsp;|&nbsp;&nbsp;Dead Cells: </span><span class="text" id="deadPixelNum">0</span>
