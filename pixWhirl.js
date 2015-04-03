@@ -25,6 +25,7 @@ var canvas, ctx, img, flag = false,
 	//game state variables
     pixArr = [],
 	lastIter = [],
+	iterCountElem,
 	livePixelElem,
 	deadPixelElem,
 	totalPixels = xDim*yDim,
@@ -40,7 +41,8 @@ var canvas, ctx, img, flag = false,
 	useGameOfLife = true,
 	useDayAndNight = false,
 	useLifeWithoutDeath = false,
-	useHighlife = false;
+	useHighlife = false,
+	wrapAround = true;
 	
 function getDocWidth() {
     var D = document;
@@ -80,17 +82,17 @@ var init = function(){
 	
 	//do things based on mouse movement (currently not fully functional)
 	canvas.addEventListener("mousemove", function (e) {
-        findxy('move', e)
+        findxy('move', e);
     }, false);
     canvas.addEventListener("mousedown", function (e) {
 		//console.log(e.clientX+", "+e.clientY);
-        findxy('down', e)
+        findxy('down', e);
     }, false);
     canvas.addEventListener("mouseup", function (e) {
-        findxy('up', e)
+        findxy('up', e);
     }, false);
     canvas.addEventListener("mouseout", function (e) {
-        findxy('out', e)
+        findxy('out', e);
     }, false);
 	
 	//initialize sum
@@ -247,50 +249,139 @@ var loop = function(msDefault){
 var pixChecker = function(x,y){
 	//sum = total number of living squares around selected pixel.
 	var sum = 0;
-	//if not on left or top border
-	if(x!==0 && y!==0){
+	//if on top or left border
+	if(x===0 || y===0){
+		//if on both top and left border (0,0)
+		if(x===0 && y===0){
+			//check surrounding pixels
+			for(i=x;i<=x+pixelSize;i+=pixelSize){
+				for(j=y;j<=y+pixelSize;j+=pixelSize){
+					//if (i,j) is not the center pixel
+					if(!(i>=xDim || j>=yDim)/*i!==x && j!==y*/){
+						//add pixel value to total
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+			if(wrapAround){
+				sum+=lastIter[0][yDim-pixelSize];
+				sum+=lastIter[pixelSize][yDim-pixelSize];
+				sum+=lastIter[xDim-pixelSize][0];
+				sum+=lastIter[xDim-pixelSize][pixelSize];
+				sum+=lastIter[xDim-pixelSize][yDim-pixelSize];
+			}
+		}
+		//if on top border
+		else if(x!==0 && y===0){
+			//check surrounding pixels
+			for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
+				for(j=y;j<=y+pixelSize;j+=pixelSize){
+					if(!(i>=xDim || j>=yDim)){
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+			if(wrapAround){
+				var j = yDim-pixelSize;
+				for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
+					if(!(i>=xDim || j>=yDim)){
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+		}
+		else if(x===0 && y!==0){
+			//check surrounding pixels
+			for(i=x;i<=x+pixelSize;i+=pixelSize){
+				for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
+					//if (i,j) is not the center pixel and neither i nor j is greater than the size of the field
+					if(!(i>=xDim || j>=yDim)){
+						//add pixel value to total
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+			if(wrapAround){
+				var i = xDim-pixelSize;
+				for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
+					if(!(i>=xDim || j>=yDim)){
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+		}
+	}
+	//if on either bottom or right border
+	else if(x===xDim-pixelSize || y===yDim-pixelSize){
+		//if on both bottom and right border (0,0)
+		if(x===xDim-pixelSize && y===yDim-pixelSize){
+			//check surrounding pixels
+			for(i=x-pixelSize;i<=x;i+=pixelSize){
+				for(j=y-pixelSize;j<=y;j+=pixelSize){
+					//if (i,j) is not the center pixel
+					if(!(i>=xDim || j>=yDim)/*i!==x && j!==y*/){
+						//add pixel value to total
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+			if(wrapAround){
+				sum+=lastIter[xDim-2*pixelSize][0];
+				sum+=lastIter[xDim-pixelSize][0];
+				sum+=lastIter[0][0];
+				sum+=lastIter[0][yDim-pixelSize];
+				sum+=lastIter[0][yDim-2*pixelSize];
+			}
+		}
+		//if on bottom border
+		else if(x!==xDim-pixelSize && y===yDim-pixelSize){
+			//check surrounding pixels
+			for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
+				for(j=y-pixelSize;j<=y;j+=pixelSize){
+					if(!(i>=xDim || j>=yDim)){
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+			if(wrapAround){
+				var j = 0;
+				for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
+					if(!(i>=xDim || j>=yDim)){
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+		}
+		//if on right border
+		else if(x===xDim-pixelSize && y!==yDim-pixelSize){
+			//check surrounding pixels
+			for(i=x-pixelSize;i<=x;i+=pixelSize){
+				for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
+					//if (i,j) is not the center pixel and neither i nor j is greater than the size of the field
+					if(!(i>=xDim || j>=yDim)){
+						//add pixel value to total
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+			if(wrapAround){
+				var i = 0;
+				for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
+					if(!(i>=xDim || j>=yDim)){
+						sum+=lastIter[i][j];
+					}
+				}
+			}
+		}
+	}
+	//generic case (not on border)
+	else{
 		//check surrounding pixels
 		for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
 			for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
 				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the fieldcountOut++;
 				if(!(i>=xDim || j>=yDim)){
 					//add prev. value to total
-					sum+=lastIter[i][j];
-				}
-			}
-		}
-	}
-	//if on top border
-	else if(x!==0 && y===0){
-		//check surrounding pixels
-		for(i=x-pixelSize;i<=x+pixelSize;i+=pixelSize){
-			for(j=y;j<=y+pixelSize;j+=pixelSize){
-				if(!(i>=xDim || j>=yDim)){
-					sum+=lastIter[i][j];
-				}
-			}
-		}
-	}
-	else if(x===0 && y!==0){
-		//check surrounding pixels
-		for(i=x;i<=x+pixelSize;i+=pixelSize){
-			for(j=y-pixelSize;j<=y+pixelSize;j+=pixelSize){
-				//if (i,j) is not the center pixel and neither i nor j is greater than the size of the field
-				if(!(i>=xDim || j>=yDim)){
-					//add pixel value to total
-					sum+=lastIter[i][j];
-				}
-			}
-		}
-	}
-	//if on both top and left border (0,0)
-	else{
-		//check surrounding pixels
-		for(i=x;i<=x+pixelSize;i+=pixelSize){
-			for(j=y;j<=y+pixelSize;j+=pixelSize){
-				//if (i,j) is not the center pixel
-				if(i!==x && j!==y){
-					//add pixel value to total
 					sum+=lastIter[i][j];
 				}
 			}
